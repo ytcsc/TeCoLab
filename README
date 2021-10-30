@@ -1,11 +1,5 @@
 (English)
-TeCoLab stands for Temperature Control Laboratory. It is a brazilian open source plataform that contains (Arduino UNO compatible) hardware,
-(Arduino UNO) firmware and software. The purpose of this project is to provide a cheap plataform to help any interested person to understand
-several basic concepts about control systems. This project uses a MIT License, which means that you are basically free to do anything you
-like with this project.
+TeCoLab stands for Temperature Control Laboratory. It is a brazilian open source plataform that contains (Arduino UNO compatible) hardware,(Arduino UNO) firmware and software. The purpose of this project is to provide a cheap plataform to help any interested person to understand several basic concepts about control systems. This project uses a MIT License, which means that you are basically free to do anything you like with this project.
 
 (Português)
-TeCoLab significa Laboratório de Controle de Temperatura (do inglês, Temperature Control Laboratory). É um projeto open-source brasileiro
-que contém hardware (compatível com o Arduíno UNO), firmware (para Arduíno UNO) e software. O objetivo deste projeto é fornecer uma plataforma
-barata para ajudar qualquer pessoa interessada a entender diversos conveitos básicos sobre sistemas de controle. Este projeto utiliza licensa MIT,
-o que significa basicamente que você é livre para fazer o que quiser com este projeto.
+TeCoLab significa Laboratório de Controle de Temperatura (do inglês, Temperature Control Laboratory). É um projeto open-source brasileiro que contém hardware (compatível com o Arduíno UNO), firmware (para Arduíno UNO) e software. O objetivo deste projeto é fornecer uma plataforma barata para ajudar qualquer pessoa interessada a entender diversos conveitos básicos sobre sistemas de controle. Este projeto utiliza licensa MIT, o que significa basicamente que você é livre para fazer o que quiser com este projeto.
