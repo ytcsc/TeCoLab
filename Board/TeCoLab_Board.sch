@@ -28,12 +28,12 @@ $Comp
 L Connector:Jack-DC J1
 U 1 1 619DCAF3
 P 850 1450
-F 0 "J1" H 907 1775 50  0000 C CNN
-F 1 "Jack" H 907 1684 50  0000 C CNN
+F 0 "J1" H 850 1750 50  0000 C CNN
+F 1 "Jack" H 850 1650 50  0000 C CNN
 F 2 "Connector_BarrelJack:BarrelJack_Horizontal" H 900 1410 50  0001 C CNN
 F 3 "~" H 900 1410 50  0001 C CNN
 	1    850  1450
-	1    0    0    1   
+	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R R3
@@ -86,15 +86,11 @@ Wire Wire Line
 	1550 1100 1300 1100
 Wire Wire Line
 	1300 1100 1300 1350
-Wire Wire Line
-	1300 1350 1150 1350
 Connection ~ 1550 1100
 Wire Wire Line
 	1550 1800 1300 1800
 Wire Wire Line
 	1300 1800 1300 1550
-Wire Wire Line
-	1300 1550 1150 1550
 Connection ~ 1550 1800
 $Comp
 L power:+12V #PWR07
@@ -1118,7 +1114,7 @@ U 1 1 61A5C27F
 P 4700 1100
 F 0 "H1" H 4800 1100 50  0000 L CNN
 F 1 "Hole" H 4800 1055 50  0001 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 4700 1100 50  0001 C CNN
+F 2 "MountingHole:MountingHole_6mm" H 4700 1100 50  0001 C CNN
 F 3 "~" H 4700 1100 50  0001 C CNN
 	1    4700 1100
 	1    0    0    -1  
@@ -1129,7 +1125,7 @@ U 1 1 61A77DDF
 P 5050 1100
 F 0 "H3" H 5150 1100 50  0000 L CNN
 F 1 "Hole" H 5150 1055 50  0001 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 5050 1100 50  0001 C CNN
+F 2 "MountingHole:MountingHole_6mm" H 5050 1100 50  0001 C CNN
 F 3 "~" H 5050 1100 50  0001 C CNN
 	1    5050 1100
 	1    0    0    -1  
@@ -1140,7 +1136,7 @@ U 1 1 61A8530C
 P 5400 1100
 F 0 "H5" H 5500 1100 50  0000 L CNN
 F 1 "Hole" H 5500 1055 50  0001 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 5400 1100 50  0001 C CNN
+F 2 "MountingHole:MountingHole_6mm" H 5400 1100 50  0001 C CNN
 F 3 "~" H 5400 1100 50  0001 C CNN
 	1    5400 1100
 	1    0    0    -1  
@@ -1151,7 +1147,7 @@ U 1 1 61A85615
 P 5750 1100
 F 0 "H7" H 5850 1100 50  0000 L CNN
 F 1 "Hole" H 5850 1055 50  0001 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 5750 1100 50  0001 C CNN
+F 2 "MountingHole:MountingHole_6mm" H 5750 1100 50  0001 C CNN
 F 3 "~" H 5750 1100 50  0001 C CNN
 	1    5750 1100
 	1    0    0    -1  
@@ -1982,4 +1978,8 @@ Wire Wire Line
 	2200 3700 2200 4450
 Wire Wire Line
 	2350 3700 2350 4750
+Wire Wire Line
+	1150 1550 1300 1550
+Wire Wire Line
+	1150 1350 1300 1350
 $EndSCHEMATC
