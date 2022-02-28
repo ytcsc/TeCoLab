@@ -109,7 +109,7 @@ void HardwareControl()
 
 void CheckSerial()
 {
-  unsigned long currenttime = millis();
+  unsigned long currenttime;
   char serialbytes[32] = {0};
   
   if (Serial.available() > 0)
@@ -117,6 +117,7 @@ void CheckSerial()
     Serial.readBytes(serialbytes, 32);
     HandleMsg(serialbytes, 32);
   }
+  currenttime = millis();
   if (currenttime - TecolabData.lastCommunicationTime > CONNECTION_TIME)
   {
     TecolabData.connectionStatus = CSTATUS_WAITING;
