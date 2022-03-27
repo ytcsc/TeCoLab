@@ -36,7 +36,7 @@ DallasTemperature heater2TempSensor(&heater2TemperatureSensorBus);
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.setTimeout(3);
   while (Serial.available() > 0)
     Serial.read();
