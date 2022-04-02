@@ -96,7 +96,7 @@ class Experiment:
 
 		if self.ellapsed_time - self.last_log_time >= 1000:
 			self.last_log_time = self.ellapsed_time
-			self.logDB.to_csv(self.log_filename)
+			self.logDB.to_csv(self.log_filename, index = False)
 
 	def iterationControl(self):
 		self.ellapsedTime()

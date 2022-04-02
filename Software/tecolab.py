@@ -25,7 +25,9 @@ from Modules.TCL_CommunicationProtocol import *
 from Controllers.NullControl import *
 
 ## Parameters (to do: remove the need of this part)
-expPath = "Experiments/basic.csv"
+expName = "StepResponse"
+expFilePath = "Experiments/" + expName + ".csv"
+expInfoPath = "Experiments/" + expName + ".txt"
 
 ## Search for a TeCoLab device
 tecolab = searchTeCoLabPort()
@@ -34,8 +36,11 @@ if tecolab == False:
 	exit()
 
 ## Load the selected experiment
-print("Loading experiment.")
-exp = Experiment(expPath)
+print("Loading experiment: " + expName)
+exp = Experiment(expFilePath)
+expDescription = open(expInfoPath, 'r')
+print(expDescription.read())
+print('Experiment table:')
 print(exp.expTable)
 
 ## Load the selected controller
