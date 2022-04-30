@@ -22,6 +22,7 @@ SOFTWARE.
 
 import pandas as pd
 import numpy as np
+import pathlib
 import time
 import datetime
 
@@ -94,9 +95,14 @@ class Experiment:
 			)
 		self.logDB = pd.concat([self.logDB, tempDB])
 
-		if self.ellapsed_time - self.last_log_time >= 1000:
+		if self.ellapsed_time - self.last_log_time >= 5000:
 			self.last_log_time = self.ellapsed_time
-			self.logDB.to_csv(self.log_filename, index = False)
+			path = pathlib.Path(self.log_filename)
+			if path.is_file():
+				self.logDB.to_csv(self.log_filename, mode = 'a', index = False, header = False)
+			else:
+				self.logDB.to_csv(self.log_filename, index = False, header = True)
+			self._clearLog()
 
 	def iterationControl(self):
 		self.ellapsedTime()
@@ -149,6 +155,9 @@ class Experiment:
 	def getDisturbedControlAction(self):
 		return self.disturbedControlAction[0]
 
+	def _clearLog(self):
+		del self.logDB
+		self._createLogDatabase(createFilename = False)
 
 	def _getCurrentRow(self):
 		self.currentRow = self.expTable[self.expTable["time [ms]"] <= self.ellapsed_time].iloc[-1]
@@ -183,9 +192,10 @@ class Experiment:
 	def _millis(self):
 		return round(time.time()*1000)
 
-	def _createLogDatabase(self):
+	def _createLogDatabase(self, createFilename = True):
 		self.logDB = pd.DataFrame(columns = ['Time [ms]', 'TempH1 [°C]', 'TempH2 [°C]', 'TempAm [°C]', 'sp1_abs [°C]', 'sp2_abs [°C]', 'sp1_rel [°C]', 'sp2_rel [°C]', 'h1_mul_noise', 'h2_mul_noise', 'fan_mul_noise', 'h1_add_noise', 'h2_add_noise', 'fan_add_noise', 'h1_neg_sat', 'h2_neg_sat', 'fan_neg_sat', 'h1_pos_sat', 'h2_pos_sat', 'fan_pos_sat', 'ComputedPWMH1', 'ComputedPWMH2', 'ComputedPWMFan', 'NewControlAction', 'DisturbedPWMH1', 'DisturbedPWMH2', 'DisturbedPWMFan'])
-		self.log_filename = "Logs/" + datetime.datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p") + ".csv"
+		if createFilename == True:
+			self.log_filename = "Logs/" + datetime.datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p") + ".csv"
 
 	def _assertExperimentTable(self):
 		# Tests if time values are unique.
