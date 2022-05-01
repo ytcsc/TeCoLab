@@ -48,7 +48,7 @@ class Experiment:
 		self.current_time = self._millis()
 		self.ellapsed_time = self._millis()
 		self.last_iteration_time = 0
-		self.period = 100 # [ms]
+		self.period = 200 # [ms]
 		self.run_flag = True
 
 		self.temperatures = 0
