@@ -1,0 +1,4 @@
+time [ms],sp1_abs [°C],sp2_abs [°C],sp1_rel [°C],sp2_rel [°C],h1_mul_noise,h2_mul_noise,fan_mul_noise,h1_add_noise,h2_add_noise,fan_add_noise,h1_neg_sat,h2_neg_sat,fan_neg_sat,h1_pos_sat,h2_pos_sat,fan_pos_sat
+0,,,,,1,1,1,0,0,0,0,0,0,100,100,100
+10000,,,,,1,1,1,10,10,0,0,0,0,100,100,100
+1810000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
