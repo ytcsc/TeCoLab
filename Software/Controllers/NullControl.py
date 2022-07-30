@@ -21,24 +21,36 @@ SOFTWARE.
 '''
 
 ## NullControl - Does nothing
+import control as ctrl
+import math
 
 ## Define TeCoLab variable class
 class Controller:
 	def __init__(self, T = 1):
-		self.T = T # Sampling period [x100 ms]
+		self.T = T # Sampling period [x200 ms]
 		self.counter = 0
 		self.lastControlAction = (0, 0, 0)
 
-	# When programming a new controller, change only the following method
+	# When programming a new controller, change the following method
 	def controlAction(self, setPoints, temperatures):
 		# Control algorithm input variables
 		sp1_abs = setPoints[0]
-		sp1_rel = setPoints[1]
-		sp2_abs = setPoints[2]
+		sp2_abs = setPoints[1]
+		sp1_rel = setPoints[2]
 		sp2_rel = setPoints[3]
-		tem_Amb = temperatures[0]
-		tem_He1 = temperatures[1]
-		tem_He2 = temperatures[2]
+		tem_He1 = temperatures[0]
+		tem_He2 = temperatures[1]
+		tem_Amb = temperatures[2]
+
+		# Assert input variables (avoiding NaN in set points)
+		if math.isnan(sp1_abs):
+			sp1_abs = 0;
+		if math.isnan(sp2_abs):
+			sp2_abs = 0;
+		if math.isnan(sp1_rel):
+			sp1_rel = 0;
+		if math.isnan(sp2_rel):
+			sp2_rel = 0;
 
 		# Control algorithm output variables
 		H1PWM = 0
@@ -51,7 +63,7 @@ class Controller:
 		# Control algorithm return
 		return H1PWM, H2PWM, CoolerPWM
 
-	# When programming a new controller, do not change the following methods
+	# When programming a new controller, DO NOT change the following methods
 	def _control(self, setPoints, temperatures):
 		self.counter += 1
 		if self.counter >= 0:
