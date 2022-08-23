@@ -195,7 +195,7 @@ class Experiment:
 	def _createLogDatabase(self, createFilename = True):
 		self.logDB = pd.DataFrame(columns = ['Time [ms]', 'TempH1 [°C]', 'TempH2 [°C]', 'TempAm [°C]', 'sp1_abs [°C]', 'sp2_abs [°C]', 'sp1_rel [°C]', 'sp2_rel [°C]', 'h1_mul_noise', 'h2_mul_noise', 'fan_mul_noise', 'h1_add_noise', 'h2_add_noise', 'fan_add_noise', 'h1_neg_sat', 'h2_neg_sat', 'fan_neg_sat', 'h1_pos_sat', 'h2_pos_sat', 'fan_pos_sat', 'ComputedPWMH1', 'ComputedPWMH2', 'ComputedPWMFan', 'NewControlAction', 'DisturbedPWMH1', 'DisturbedPWMH2', 'DisturbedPWMFan'])
 		if createFilename == True:
-			self.log_filename = "Logs/" + datetime.datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p") + ".csv"
+			self.log_filename = "Logs/" + datetime.datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p") + ".csv"
 
 	def _assertExperimentTable(self):
 		# Tests if time values are unique.
