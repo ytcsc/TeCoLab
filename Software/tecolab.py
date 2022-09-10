@@ -22,12 +22,16 @@ SOFTWARE.
 
 from Modules.TCL_Experiment import *
 from Modules.TCL_CommunicationProtocol import *
-from Controllers.NullControl import *
+from Modules.TCL_CommandLineArguments import *
+import importlib
+import sys
 
-## Parameters (to do: remove the need of this part)
-expName = "StepResponse"
-expFilePath = "Experiments/" + expName + ".csv"
-expInfoPath = "Experiments/" + expName + ".txt"
+## Get parameters
+args = getParameters()
+expFilePath = "Experiments/" + args.ExperimentFileName + ".csv"
+expInfoPath = "Experiments/" + args.ExperimentFileName + ".txt"
+controlFilePath = "Controllers." + args.ControllerModuleName
+controlModule = importlib.import_module(controlFilePath)
 
 ## Search for a TeCoLab device
 tecolab = searchTeCoLabPort()
@@ -36,7 +40,7 @@ if tecolab == False:
 	exit()
 
 ## Load the selected experiment
-print("Loading experiment: " + expName)
+print("Loading experiment: " + args.ExperimentFileName)
 exp = Experiment(expFilePath)
 expDescription = open(expInfoPath, 'r')
 print(expDescription.read())
@@ -44,7 +48,9 @@ print('Experiment table:')
 print(exp.expTable)
 
 ## Load the selected controller
-cont = Controller(T = 2)
+if (args.period < 1):
+	args.period = 1
+cont = controlModule.Controller(T = args.period)
 
 ## Execute experiment
 exp.setInitialTime()
