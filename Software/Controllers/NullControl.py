@@ -32,7 +32,7 @@ class Controller:
 		self.lastControlAction = (0, 0, 0)
 
 	# When programming a new controller, change the following method
-	def controlAction(self, setPoints, temperatures):
+	def controlAction(self, setPoints, temperatures, **kwargs):
 		# Control algorithm input variables
 		sp1_abs = setPoints[0]
 		sp2_abs = setPoints[1]
