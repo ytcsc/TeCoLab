@@ -29,7 +29,7 @@ class Controller:
 	def __init__(self, T = 1):
 		self.T = T # Sampling period [x200 ms]
 		self.counter = 0
-		self.lastControlAction = (0, 0, 0)
+		self.lastControlAction = (0, 0, 0) 
 
 	# When programming a new controller, change the following method
 	def controlAction(self, setPoints, temperatures, **kwargs):
