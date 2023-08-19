@@ -24,7 +24,8 @@ import pandas as pd
 import numpy as np
 import pathlib
 import time
-import datetime
+from datetime import datetime
+from enums import CSVColumns
 
 ## Error messages
 ERROR_T1 = "Error: Experiment table has duplicate values in time column."
@@ -41,8 +42,8 @@ class Experiment:
 		self.expTable = pd.read_csv(expPath)
 		self.currentRow = 0
 		#self.current_index = 0
-		#self.final_index = self.expTable["time [ms]"].size
-		self.final_time = self.expTable["time [ms]"].max()
+		#self.final_index = self.expTable[CSVColumns.Time.value].size
+		self.final_time = self.expTable[CSVColumns.Time.value].max()
 
 		self.initial_time = self._millis()
 		self.current_time = self._millis()
@@ -64,35 +65,35 @@ class Experiment:
 	def log(self):
 		tempDB = pd.DataFrame(
 			{
-				"Time [ms]": self.ellapsed_time,
-				"TempH1 [°C]": [self.temperatures[0]],
-				"TempH2 [°C]": [self.temperatures[1]],
-				"TempAm [°C]": [self.temperatures[2]],
-				"sp1_abs [°C]": self.currentRow["sp1_abs [°C]"],
-				"sp2_abs [°C]": self.currentRow["sp2_abs [°C]"],
-				"sp1_rel [°C]": self.currentRow["sp1_rel [°C]"],
-				"sp2_rel [°C]": self.currentRow["sp2_rel [°C]"],
-				"h1_mul_noise": self.currentRow["h1_mul_noise"],
-				"h2_mul_noise": self.currentRow["h2_mul_noise"],
-				"fan_mul_noise": self.currentRow["fan_mul_noise"],
-				"h1_add_noise": self.currentRow["h1_add_noise"],
-				"h2_add_noise": self.currentRow["h2_add_noise"],
-				"fan_add_noise": self.currentRow["fan_add_noise"],
-				"h1_neg_sat": self.currentRow["h1_neg_sat"],
-				"h2_neg_sat": self.currentRow["h2_neg_sat"],
-				"fan_neg_sat": self.currentRow["fan_neg_sat"],
-				"h1_pos_sat": self.currentRow["h1_pos_sat"],
-				"h2_pos_sat": self.currentRow["h2_pos_sat"],
-				"fan_pos_sat": self.currentRow["fan_pos_sat"],
-				"ComputedPWMH1": [self.controlAction[0][0]],
-				"ComputedPWMH2": [self.controlAction[0][1]],
-				"ComputedPWMFan": [self.controlAction[0][2]],
-				"NewControlAction": [self.controlAction[1]],
-				"DisturbedPWMH1": [self.disturbedControlAction[0][0]],
-				"DisturbedPWMH2": [self.disturbedControlAction[0][1]],
-				"DisturbedPWMFan": [self.disturbedControlAction[0][2]],
+				CSVColumns.Time.value: self.ellapsed_time,
+				CSVColumns.TemperatureH1.value: [self.temperatures[0]],
+				CSVColumns.TemperatureH2.value: [self.temperatures[1]],
+				CSVColumns.TemperatureAMB.value: [self.temperatures[2]],
+				CSVColumns.SetPoint1Absolute.value: self.currentRow[CSVColumns.SetPoint1Absolute.value],
+				CSVColumns.SetPoint2Absolute.value: self.currentRow[CSVColumns.SetPoint2Absolute.value],
+				CSVColumns.SetPoint1Relative.value: self.currentRow[CSVColumns.SetPoint1Relative.value],
+				CSVColumns.SetPoint1Relative.value: self.currentRow[CSVColumns.SetPoint1Relative.value],
+				CSVColumns.MultiplicativeNoiseH1.value: self.currentRow[CSVColumns.MultiplicativeNoiseH1.value],
+				CSVColumns.MultiplicativeNoiseH2.value: self.currentRow[CSVColumns.MultiplicativeNoiseH2.value],
+				CSVColumns.MultiplicativeNoiseFan.value: self.currentRow[CSVColumns.MultiplicativeNoiseFan.value],
+				CSVColumns.AdditiveNoiseH1.value: self.currentRow[CSVColumns.AdditiveNoiseH1.value],
+				CSVColumns.AdditiveNoiseH2.value: self.currentRow[CSVColumns.AdditiveNoiseH2.value],
+				CSVColumns.AdditiveNoiseFan.value: self.currentRow[CSVColumns.AdditiveNoiseFan.value],
+				CSVColumns.NegativeSaturationH1.value: self.currentRow[CSVColumns.NegativeSaturationH1.value],
+				CSVColumns.NegativeSaturationH2.value: self.currentRow[CSVColumns.NegativeSaturationH2.value],
+				CSVColumns.NegativeSaturationFan.value: self.currentRow[CSVColumns.NegativeSaturationFan.value],
+				CSVColumns.PositiveSaturationH1.value: self.currentRow[CSVColumns.PositiveSaturationH1.value],
+				CSVColumns.PositiveSaturationH2.value: self.currentRow[CSVColumns.PositiveSaturationH2.value],
+				CSVColumns.PositiveSaturationFan.value: self.currentRow[CSVColumns.PositiveSaturationFan.value],
+				CSVColumns.ComputedPWMH1.value: [self.controlAction[0][0]],
+				CSVColumns.ComputedPWMH2.value: [self.controlAction[0][1]],
+				CSVColumns.ComputedPWMFan.value: [self.controlAction[0][2]],
+				CSVColumns.NewControlAction.value: [self.controlAction[1]],
+				CSVColumns.DisturbedPWMH1.value: [self.disturbedControlAction[0][0]],
+				CSVColumns.DisturbedPWMH2.value: [self.disturbedControlAction[0][1]],
+				CSVColumns.DisturbedPWMFan.value: [self.disturbedControlAction[0][2]],
 			}
-			)
+		)
 		self.logDB = pd.concat([self.logDB, tempDB])
 
 		if self.ellapsed_time - self.last_log_time >= 5000:
@@ -127,7 +128,7 @@ class Experiment:
 
 	def getSetPoints(self):
 		cr = self.currentRow
-		return cr["sp1_abs [°C]"], cr["sp2_abs [°C]"], cr["sp1_rel [°C]"], cr["sp2_rel [°C]"]
+		return cr[CSVColumns.SetPoint1Absolute.value], cr[CSVColumns.SetPoint2Absolute.value], cr[CSVColumns.SetPoint1Relative.value], cr[CSVColumns.SetPoint1Relative.value]
 
 	def setTemperatures(self, temp):
 		self.temperatures = temp
@@ -146,9 +147,9 @@ class Experiment:
 		if np.isnan(CoPWM):
 			CoPWM = 0
 
-		H1PWM = np.clip(H1PWM*self.currentRow["h1_mul_noise"] + self.currentRow["h1_add_noise"], self.currentRow["h1_neg_sat"], self.currentRow["h1_pos_sat"])
-		H2PWM = np.clip(H2PWM*self.currentRow["h2_mul_noise"] + self.currentRow["h2_add_noise"], self.currentRow["h2_neg_sat"], self.currentRow["h2_pos_sat"])
-		CoPWM = np.clip(CoPWM*self.currentRow["fan_mul_noise"] + self.currentRow["fan_add_noise"], self.currentRow["fan_neg_sat"], self.currentRow["fan_pos_sat"])
+		H1PWM = np.clip(H1PWM*self.currentRow[CSVColumns.MultiplicativeNoiseH1.value] + self.currentRow[CSVColumns.AdditiveNoiseH1.value], self.currentRow[CSVColumns.NegativeSaturationH1.value], self.currentRow[CSVColumns.PositiveSaturationH1.value])
+		H2PWM = np.clip(H2PWM*self.currentRow[CSVColumns.MultiplicativeNoiseH2.value] + self.currentRow[CSVColumns.AdditiveNoiseH2.value], self.currentRow[CSVColumns.NegativeSaturationH2.value], self.currentRow[CSVColumns.PositiveSaturationH2.value])
+		CoPWM = np.clip(CoPWM*self.currentRow[CSVColumns.MultiplicativeNoiseFan.value] + self.currentRow[CSVColumns.AdditiveNoiseFan.value], self.currentRow[CSVColumns.NegativeSaturationFan.value], self.currentRow[CSVColumns.PositiveSaturationFan.value])
 
 		self.disturbedControlAction = ((H1PWM, H2PWM, CoPWM), self.controlAction[1])
 
@@ -160,67 +161,70 @@ class Experiment:
 		self._createLogDatabase(createFilename = False)
 
 	def _getCurrentRow(self):
-		self.currentRow = self.expTable[self.expTable["time [ms]"] <= self.ellapsed_time].iloc[-1]
+		self.currentRow = self.expTable[self.expTable[CSVColumns.Time.value] <= self.ellapsed_time].iloc[-1]
 		self._assertCurrentRow()
 
 	def _assertCurrentRow(self):
-		if np.isnan(self.currentRow["h1_mul_noise"]):
-			self.currentRow["h1_mul_noise"] = 1
-		if np.isnan(self.currentRow["h2_mul_noise"]):
-			self.currentRow["h2_mul_noise"] = 1
-		if np.isnan(self.currentRow["fan_mul_noise"]):
-			self.currentRow["fan_mul_noise"] = 1
-		if np.isnan(self.currentRow["h1_add_noise"]):
-			self.currentRow["h1_add_noise"] = 0
-		if np.isnan(self.currentRow["h2_add_noise"]):
-			self.currentRow["h2_add_noise"] = 0
-		if np.isnan(self.currentRow["fan_add_noise"]):
-			self.currentRow["fan_add_noise"] = 1
-		if np.isnan(self.currentRow["h1_neg_sat"]):
-			self.currentRow["h1_neg_sat"] = 0
-		if np.isnan(self.currentRow["h2_neg_sat"]):
-			self.currentRow["h2_neg_sat"] = 0
-		if np.isnan(self.currentRow["fan_neg_sat"]):
-			self.currentRow["fan_neg_sat"] = 0
-		if np.isnan(self.currentRow["h1_pos_sat"]):
-			self.currentRow["h1_pos_sat"] = 100
-		if np.isnan(self.currentRow["h2_pos_sat"]):
-			self.currentRow["h2_pos_sat"] = 100
-		if np.isnan(self.currentRow["fan_pos_sat"]):
-			self.currentRow["fan_pos_sat"] = 100
+
+		if np.isnan(self.currentRow[CSVColumns.MultiplicativeNoiseH1.value]):
+			self.currentRow[CSVColumns.MultiplicativeNoiseH1.value] = 1
+		if np.isnan(self.currentRow[CSVColumns.MultiplicativeNoiseH2.value]):
+			self.currentRow[CSVColumns.MultiplicativeNoiseH2.value] = 1
+		if np.isnan(self.currentRow[CSVColumns.MultiplicativeNoiseFan.value]):
+			self.currentRow[CSVColumns.MultiplicativeNoiseFan.value] = 1
+		if np.isnan(self.currentRow[CSVColumns.AdditiveNoiseH1.value]):
+			self.currentRow[CSVColumns.AdditiveNoiseH1.value] = 0
+		if np.isnan(self.currentRow[CSVColumns.AdditiveNoiseH2.value]):
+			self.currentRow[CSVColumns.AdditiveNoiseH2.value] = 0
+		if np.isnan(self.currentRow[CSVColumns.AdditiveNoiseFan.value]):
+			self.currentRow[CSVColumns.AdditiveNoiseFan.value] = 1
+		if np.isnan(self.currentRow[CSVColumns.NegativeSaturationH1.value]):
+			self.currentRow[CSVColumns.NegativeSaturationH1.value] = 0
+		if np.isnan(self.currentRow[CSVColumns.NegativeSaturationH2.value]):
+			self.currentRow[CSVColumns.NegativeSaturationH2.value] = 0
+		if np.isnan(self.currentRow[CSVColumns.NegativeSaturationFan.value]):
+			self.currentRow[CSVColumns.NegativeSaturationFan.value] = 0
+		if np.isnan(self.currentRow[CSVColumns.PositiveSaturationH1.value]):
+			self.currentRow[CSVColumns.PositiveSaturationH1.value] = 100
+		if np.isnan(self.currentRow[CSVColumns.PositiveSaturationH2.value]):
+			self.currentRow[CSVColumns.PositiveSaturationH2.value] = 100
+		if np.isnan(self.currentRow[CSVColumns.PositiveSaturationFan.value]):
+			self.currentRow[CSVColumns.PositiveSaturationFan.value] = 100
 
 	def _millis(self):
 		return round(time.time()*1000)
 
 	def _createLogDatabase(self, createFilename = True):
-		self.logDB = pd.DataFrame(columns = ['Time [ms]', 'TempH1 [°C]', 'TempH2 [°C]', 'TempAm [°C]', 'sp1_abs [°C]', 'sp2_abs [°C]', 'sp1_rel [°C]', 'sp2_rel [°C]', 'h1_mul_noise', 'h2_mul_noise', 'fan_mul_noise', 'h1_add_noise', 'h2_add_noise', 'fan_add_noise', 'h1_neg_sat', 'h2_neg_sat', 'fan_neg_sat', 'h1_pos_sat', 'h2_pos_sat', 'fan_pos_sat', 'ComputedPWMH1', 'ComputedPWMH2', 'ComputedPWMFan', 'NewControlAction', 'DisturbedPWMH1', 'DisturbedPWMH2', 'DisturbedPWMFan'])
+		columns_list = [column.value for column in CSVColumns]
+		self.logDB = pd.DataFrame(columns = columns_list)
 		if createFilename == True:
-			self.log_filename = "Logs/" + datetime.datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p") + ".csv"
+			date_format = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
+			self.log_filename = f'Logs/{date_format}.csv'
 
 	def _assertExperimentTable(self):
 		# Tests if time values are unique.
-		if (self.expTable["time [ms]"].count() != self.expTable["time [ms]"].nunique()):
+		if (self.expTable[CSVColumns.Time.value].count() != self.expTable[CSVColumns.Time.value].nunique()):
 			print(ERROR_T1)
 			exit()
 		# Tests if delta t exceeds 100 ms for every sample.
-		if (self.expTable["time [ms]"].diff().min() < 100):
+		if (self.expTable[CSVColumns.Time.value].diff().min() < 100):
 			print(ERROR_T2)
 			exit()
 		# Tests if there are negative values of t.
-		if (self.expTable["time [ms]"].min() < 0):
+		if (self.expTable[CSVColumns.Time.value].min() < 0):
 			print(ERROR_T3)
 			exit()
 		# Tests if there are absolute setpoint 1 that exceeds 100°C.
-		if (self.expTable["sp1_abs [°C]"].max() > 100):
+		if (self.expTable[CSVColumns.SetPoint1Absolute.value].max() > 100):
 			print(ERROR_SP1)
 			exit()
 		# Tests if there are absolute setpoint 2 that exceeds 100°C.
-		if (self.expTable["sp2_abs [°C]"].max() > 100):
+		if (self.expTable[CSVColumns.SetPoint2Absolute.value].max() > 100):
 			print(ERROR_SP2)
 			exit()
 		# Tests if there are negative values of relative setpoint 1.
-		if (self.expTable["sp1_rel [°C]"].min() < 0):
+		if (self.expTable[CSVColumns.SetPoint1Relative.value].min() < 0):
 			print(WARNING_SP1)
 		# Tests if there are negative values of relative setpoint 2.
-		if (self.expTable["sp2_rel [°C]"].min() < 0):
+		if (self.expTable[CSVColumns.SetPoint1Relative.value].min() < 0):
 			print(WARNING_SP2)
