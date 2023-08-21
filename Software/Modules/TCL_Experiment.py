@@ -25,7 +25,7 @@ import numpy as np
 import pathlib
 import time
 from datetime import datetime
-from enums import CSVColumns
+from Modules.enums import CSVColumns
 
 ## Error messages
 ERROR_T1 = "Error: Experiment table has duplicate values in time column."
