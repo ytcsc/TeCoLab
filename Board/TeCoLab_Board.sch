@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 1 1
 Title "TeCoLab"
 Date "2021-10-30"
-Rev "1.00"
+Rev "1.1"
 Comp "YouTube Channel Sob Controle"
 Comment1 "e-mail: ytcanalsobcontrole@gmail.com"
 Comment2 "Laboratório de Controle de Temperatura"
@@ -313,8 +313,6 @@ Wire Wire Line
 Wire Wire Line
 	4750 6600 4750 6450
 Connection ~ 4750 6600
-Text GLabel 5550 7000 1    50   Input ~ 0
-Sensor_2
 Connection ~ 4250 7100
 Text Notes 500  650  0    50   ~ 0
 12 V Power Supply\nEntrada Alimentação 12 V
@@ -413,11 +411,11 @@ Connection ~ 2200 1800
 Text GLabel 2650 7000 1    50   Input ~ 0
 RoomTempSensor
 Text GLabel 4100 7000 1    50   Input ~ 0
-Sensor_1
-Text GLabel 1700 6750 2    50   Output ~ 0
 Sensor_2
-Text GLabel 1700 6650 2    50   Output ~ 0
+Text GLabel 1700 6750 2    50   Output ~ 0
 Sensor_1
+Text GLabel 1700 6650 2    50   Output ~ 0
+Sensor_2
 $Comp
 L power:PWR_FLAG #FLG01
 U 1 1 61A3BF69
@@ -1306,9 +1304,9 @@ Heater_2
 Text GLabel 1200 4250 0    50   Input ~ 0
 RoomTempSensor
 Text GLabel 1200 4350 0    50   Input ~ 0
-Sensor_1
-Text GLabel 1200 4450 0    50   Input ~ 0
 Sensor_2
+Text GLabel 1200 4450 0    50   Input ~ 0
+Sensor_1
 $Comp
 L power:+5V #PWR03
 U 1 1 61A665EE
@@ -1982,4 +1980,6 @@ Wire Wire Line
 	1150 1550 1300 1550
 Wire Wire Line
 	1150 1350 1300 1350
+Text GLabel 5550 7000 1    50   Input ~ 0
+Sensor_1
 $EndSCHEMATC
