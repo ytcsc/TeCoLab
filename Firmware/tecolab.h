@@ -35,8 +35,8 @@ SOFTWARE.
 #define HEATER1_PIN 						5
 #define HEATER2_PIN 						6
 #define ROOMTEMPSENSOR_PIN			7
-#define HEATER1TEMPSENSOR_PIN		8
-#define HEATER2TEMPSENSOR_PIN		9
+#define HEATER1TEMPSENSOR_PIN		9
+#define HEATER2TEMPSENSOR_PIN		8
 
 /* Addresses Definitions */
 #define ROOMTEMP_LB_ADDR        0x00
