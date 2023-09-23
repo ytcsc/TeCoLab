@@ -6,20 +6,20 @@ from control.matlab import step
 import matplotlib.pyplot as plt
 import easygui
 
-def check_data(df):
+def check_data(dataframe):
     """
     Check if the DataFrame represents a step response.
 
     Args:
-        df (pd.DataFrame): The DataFrame to check.
+        dataframe (pd.DataFrame): The DataFrame to check.
 
     """
 
-    assert 'H1_ADD_NOISE' in df.columns, "Invalid experiment CSV file"
+    assert 'H1_ADD_NOISE' in dataframe.columns, "Invalid experiment CSV file"
 
-    df_test = df.copy()
-    df_test.drop_duplicates(subset='H1_ADD_NOISE', keep='first', inplace=True)
-    nonzero_points = df_test[df_test['H1_ADD_NOISE'] != 0]
+    dataframe_test = dataframe.copy()
+    dataframe_test.drop_duplicates(subset='H1_ADD_NOISE', keep='first', inplace=True)
+    nonzero_points = dataframe_test[dataframe_test['H1_ADD_NOISE'] != 0]
     assert len(nonzero_points) == 1, "The experiment is not a step response"
 
 
@@ -33,50 +33,45 @@ def load_data(file_path: str) -> pd.DataFrame:
     Returns:
         pd.DataFrame: The loaded data as a pandas DataFrame.
     """
-    df = pd.read_csv(file_path)
-    check_data(df)
-    df.set_index('TIME', inplace=True)
-    starting_time = df.loc[df['H1_ADD_NOISE'] > 0.0].index.values[0]
-    df = df.loc[starting_time:]
-    df.index = (df.index - starting_time) / 1000
-    return df
+    dataframe = pd.read_csv(file_path)
+    check_data(dataframe)
+    dataframe.set_index('TIME', inplace=True)
+    starting_time = dataframe.loc[dataframe['H1_ADD_NOISE'] > 0.0].index.values[0]
+    dataframe = dataframe.loc[starting_time:]
+    dataframe.index = (dataframe.index - starting_time) / 1000
+    return dataframe
 
-def calculate_parameters(df: pd.DataFrame) -> Tuple[float, float, float, float, pd.DataFrame]:
+def calculate_parameters(dataframe: pd.DataFrame) -> Tuple[float, float, float, float, float]:
     """
     Calculate system parameters and extract relevant data.
 
     Args:
-        df (pd.DataFrame): The input data as a pandas DataFrame.
+        dataframe (pd.DataFrame): The input data as a pandas DataFrame.
 
     Returns:
         Tuple[float, float, float, float, pd.DataFrame]: A tuple containing system parameters
-        (K, L, TAU, P, offset) and the modified DataFrame.
+        (K, L, TAU, P, offset)
     """
-    K = 0.0
-    L = 0.0
-    TAU = 0.0
-    P = 0.0
-    offset = 0.0
 
-    offset = df['H1_TEMP'].values[0]
-    df.loc[:,'H1_TEMP'] = df['H1_TEMP'] - offset
-    window = int(df.index.max() / 10)
-    rolling_mean = df.rolling(window).mean()
+    offset = dataframe['H1_TEMP'].values[0]
+    dataframe.loc[:,'H1_TEMP'] = dataframe['H1_TEMP'] - offset
+    window = int(dataframe.index.max() / 10)
+    rolling_mean = dataframe.rolling(window).mean()
     max_value = rolling_mean.max()[0]
 
-    P = df.loc[df['H1_ADD_NOISE'] > 0]['H1_ADD_NOISE'].values[0]
-    K = df.loc[df['H1_TEMP'] > max_value * 0.99]['H1_TEMP'].mean() / P
-    L = df.loc[df['H1_TEMP'] > 0.0].index.values[0]
-    TAU = df.loc[df['H1_TEMP'] > (0.632 * max_value)].index.values[0]
+    P = dataframe.loc[dataframe['H1_ADD_NOISE'] > 0]['H1_ADD_NOISE'].values[0]
+    K = dataframe.loc[dataframe['H1_TEMP'] > max_value * 0.99]['H1_TEMP'].mean() / P
+    L = dataframe.loc[dataframe['H1_TEMP'] > 0.0].index.values[0]
+    TAU = dataframe.loc[dataframe['H1_TEMP'] > (0.632 * max_value)].index.values[0]
 
     return K, L, TAU, P, offset
 
-def simulate_and_plot(df: pd.DataFrame, H: control.TransferFunction, K: float, L: float, TAU: float, P: float, offset: float) -> None:
+def simulate_and_plot(dataframe: pd.DataFrame, H: control.TransferFunction, K: float, L: float, TAU: float, P: float, offset: float):
     """
     Simulate the system and plot the results.
 
     Args:
-        df (pd.DataFrame): The DataFrame containing the data.
+        dataframe (pd.DataFrame): The DataFrame containing the data.
         H (control.TransferFunction): The system transfer function.
         K (float): The system gain.
         L (float): The system time delay.
@@ -85,18 +80,18 @@ def simulate_and_plot(df: pd.DataFrame, H: control.TransferFunction, K: float, L
         offset (float, optional): The vertical offset to apply to the y-values.
     """
 
-    sampling_interval = df.index[1] - df.index[0]
+    sampling_interval = dataframe.index[1] - dataframe.index[0]
 
-    t = np.arange(0, df.index.max(), sampling_interval)
+    t = np.arange(0, dataframe.index.max(), sampling_interval)
     (y, t) = step(H, T=t)
     y = y + offset
 
     plt.figure(figsize=(10, 6))
-    expression = f'$G(s) = \\frac{{{K*P}e^{{-{L}s}}}}{{{TAU}s + 1}}$'
-    plt.plot(df['H1_TEMP'], label='System', linewidth=3)
+    plt.plot(dataframe['H1_TEMP'], label='System', linewidth=3)
     plt.plot(t, y, label='Simulated system')
     plt.xlabel("Time [s]")
     plt.ylabel("Temperature [ºC]")
+    expression = f'$G(s) = \\frac{{{K*P}e^{{-{L}s}}}}{{{TAU}s + 1}}$'
     plt.title(expression)
     plt.grid(color='b', linestyle='-', linewidth=0.1)
     legend_text = f'$K = {K}$\n$L = {L}$\n$\\tau = {TAU}$\n$P = {P}$'
@@ -108,9 +103,9 @@ def simulate_and_plot(df: pd.DataFrame, H: control.TransferFunction, K: float, L
 def main() -> None:
 
     path = easygui.fileopenbox()
-    df = load_data(path)
+    dataframe = load_data(path)
 
-    K, L, TAU, P, offset = calculate_parameters(df.copy())
+    K, L, TAU, P, offset = calculate_parameters(dataframe.copy())
     n_pade = 10
     (num_pade, den_pade) = control.pade(L, n_pade)
     H_pade = control.tf(num_pade, den_pade)
@@ -121,7 +116,7 @@ def main() -> None:
 
     H_with_delay = control.series(H_pade, H_without_delay)
 
-    simulate_and_plot(df, H_with_delay, K, L, TAU, P, offset)
+    simulate_and_plot(dataframe, H_with_delay, K, L, TAU, P, offset)
 
 if __name__ == "__main__":
     main()
