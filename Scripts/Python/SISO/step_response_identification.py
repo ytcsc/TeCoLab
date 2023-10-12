@@ -68,7 +68,6 @@ def identification(dataframe: pd.DataFrame) -> Tuple[float, float, float, float,
 
 def simulate_and_plot(
         dataframe: pd.DataFrame,
-        transfer_function: control.TransferFunction,
         static_gain: float,
         time_delay: float,
         time_constant: float,
@@ -80,7 +79,6 @@ def simulate_and_plot(
 
     Args:
         dataframe (pd.DataFrame): The DataFrame containing the data.
-        transfer_function (control.TransferFunction): The system transfer function.
         static_gain (float): The system gain.
         time_delay (float): The system time delay.
         time_constant (float): The system time constant.
@@ -88,10 +86,21 @@ def simulate_and_plot(
         initial_temperature (float, optional): The vertical offset to apply to the y-values.
     """
 
+    n_pade = 10
+    (num_pade, den_pade) = control.pade(time_delay, n_pade)
+    transfer_function_pade = control.tf(num_pade, den_pade)
+
+    num = [static_gain * step_power]
+    den = [time_constant, 1]
+    transfer_function = control.tf(num, den)
+
+    transfer_function = control.series(transfer_function_pade, transfer_function)
+
     sampling_interval = dataframe.index[1] - dataframe.index[0]
 
     t = np.arange(0, dataframe.index.max(), sampling_interval)
-    (y, t) = step(transfer_function, T=t)
+
+    t, y = control.step_response(transfer_function, T=t)
     y = y + initial_temperature
 
     plt.figure(figsize=(10, 6))
@@ -114,19 +123,9 @@ def main() -> None:
     dataframe = load_data(path)
 
     static_gain, time_delay, time_constant, step_power, initial_temperature = identification(dataframe.copy())
-    n_pade = 10
-    (num_pade, den_pade) = control.pade(time_delay, n_pade)
-    transfer_function_pade = control.tf(num_pade, den_pade)
-
-    num = [static_gain * step_power]
-    den = [time_constant, 1]
-    transfer_function = control.tf(num, den)
-
-    transfer_function_with_delay = control.series(transfer_function_pade, transfer_function)
 
     simulate_and_plot(
         dataframe,
-        transfer_function_with_delay,
         static_gain,
         time_delay,
         time_constant,
