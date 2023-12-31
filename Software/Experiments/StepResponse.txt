@@ -1,2 +1,0 @@
-Experiment Description:
-This experiment applies a step input of 10% in each heater. The input is applied for 30 minutes. The experiment begins at 10 seconds.

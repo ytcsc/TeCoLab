@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Leonardo Cabral
+Copyright 2024 Leonardo Cabral
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,27 +25,31 @@ import serial.tools.list_ports
 import time
 import numpy as np
 import struct
+from Modules.tecolab_messages import TecolabMessages
 
 def searchTeCoLabPort():
 	## Check connected serial ports
 	ports = serial.tools.list_ports.comports()
 	if ports:
-		print("Identifying serial devices connected:")
+		print(TecolabMessages.Message4.value)
 		for port, desc, hwid in sorted(ports):
 		   	print("{}: {} [{}]".format(port, desc, hwid))
 	else:
-		print("No serial devices connected. Terminating program.")
+		print(TecolabMessages.Message5.value)
 		return False
 	## Search for TeCoLab device
-	print("Searching for TeCoLab device:")
+	print(TecolabMessages.Message6.value)
 	for port, desc, hwid in sorted(ports):
-		ser = serial.Serial(port, 115200, timeout = 0.10)
-		time.sleep(4)
-		print("Testing port: {}".format(ser.name))
-		ser.write(b"AA")
-		ans = ser.read(2)
+		try:
+			ser = serial.Serial(port, 115200, timeout = 0.10, write_timeout = 1.00)
+			time.sleep(4)
+			print(TecolabMessages.Message7.value, '{}'.format(ser.name))
+			ser.write(b"AA")
+			ans = ser.read(2)
+		except:
+			ans = None
 		if ans == b"AA":
-			print("TeCoLab device found at port: {}".format(ser.name))
+			print(TecolabMessages.Message8.value, '{}'.format(ser.name))
 			return ser
 		else:
 			ser.close()

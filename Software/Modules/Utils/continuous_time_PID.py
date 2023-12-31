@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Leonardo Cabral
+Copyright 2024 Leonardo Cabral
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +20,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-import argparse
+from Modules.Utils.continuous_time_LTI import Controller
+import control
 
-## Other messages
-VERSION = 'TeCoLab version: alpha'
-EXPFILEHELP = 'experiment file name in Experiments folder without extension'
-CONTMODULEHELP = 'controller module name in Controllers folder without extension'
-VERSIONHELP = 'shows TeCoLab version'
-PERIODHELP = 'chooses controller sampling period [t x 200 ms]'
+class Controller(Controller):
+	def __init__(self):
+		super().__init__()
 
-def getParameters():
-	parser = argparse.ArgumentParser()
-	parser.add_argument('ExperimentFileName', help = EXPFILEHELP)
-	parser.add_argument('ControllerModuleName', help = CONTMODULEHELP)
-	parser.add_argument('-v', help = VERSIONHELP, action = 'store_true')
-	parser.add_argument('-t', '--period', type = int, default = 1, help = PERIODHELP)
-	
-	if parser.parse_args().v:
-		print(VERSION)
-
-	return parser.parse_args()
+	def set_PID(self, Kp: float, Ki: float, Kd: float, p: float = 100, **kwargs):
+		if (Kp == 0):
+			numerator = [0]
+			denominator = [1]
+		elif (Ki == 0) and (Kd == 0): # P
+			numerator = [Kp]
+			denominator = [1]
+		elif (Ki == 0) and (Kd != 0): # PD
+			numerator = [Kp*(1+Kd*p), p]
+			denominator = [1, p]
+		elif (Ki != 0) and (Kd == 0): # PI
+			numerator = [Kp, Kp*Ki]
+			denominator = [1, 0]
+		elif (Ki != 0) and (Kd != 0): # PID
+			numerator = [Kp*(1+Kd*p), Kp*(p+Ki), Kp*Ki*p]
+			denominator = [1, p, 0]
+		system = control.TransferFunction(numerator, denominator, 0)
+		index = self.set_LTI(system, **kwargs)
+		return index
