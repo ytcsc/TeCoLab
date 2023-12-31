@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Leonardo Cabral
+Copyright 2024 Leonardo Cabral
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,56 +20,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from Modules.TCL_Experiment import *
-from Modules.TCL_CommunicationProtocol import *
-from Modules.TCL_CommandLineArguments import *
 import importlib
-import sys
+from Modules.tecolab_experiment import Experiment
+from Modules.tecolab_communication_protocol import searchTeCoLabPort, readTemperatures, writePWMs
+from Modules.tecolab_command_line_arguments import getParameters
+from Modules.tecolab_messages import TecolabMessages
 
 ## Get parameters
 args = getParameters()
-expFilePath = "Experiments/" + args.ExperimentFileName + ".csv"
-expInfoPath = "Experiments/" + args.ExperimentFileName + ".txt"
-controlFilePath = "Controllers." + args.ControllerModuleName
+expFilePath = 'Experiments/' + args.ExperimentFileName + '.csv'
+controlFilePath = 'Controllers.' + args.ControllerModuleName
 controlModule = importlib.import_module(controlFilePath)
 
 ## Search for a TeCoLab device
 tecolab = searchTeCoLabPort()
 if tecolab == False:
-	print("No TeCoLab device found. Terminating program.")
+	print(TecolabMessages.Message1.value)
 	exit()
 
 ## Load the selected experiment
-print("Loading experiment: " + args.ExperimentFileName)
-exp = Experiment(expFilePath)
-expDescription = open(expInfoPath, 'r')
-print(expDescription.read())
-print('Experiment table:')
-print(exp.expTable)
+print(TecolabMessages.Message2.value + args.ExperimentFileName)
+experiment = Experiment(experiment_path = expFilePath, experiment_period = args.period)
+print(TecolabMessages.Message3.value)
+print(experiment.table)
 
 ## Load the selected controller
 if (args.period < 1):
 	args.period = 1
-cont = controlModule.Controller(T = args.period)
+controller = controlModule.Controller()
+controller.control_setup()
 
-## Execute experiment
-exp.setInitialTime()
-
-while(exp.run_flag == True):
-	if (exp.iterationControl() == True):
+while(experiment.is_running == True):
+	if (experiment.iterationControl() == True):
 		# Reads temperatures
-		exp.setTemperatures(readTemperatures(tecolab))
+		experiment.setTemperatures(readTemperatures(tecolab))
 
 		# Get control action
-		exp.controlAction = cont._control(exp.getSetPoints(), exp.getTemperatures())
+		experiment.setControlAction(controller._control_compute(experiment.getSetPoints(), experiment.getTemperatures()))
 
 		# Adds experiment disturbances
-		exp.applyDisturbances()
+		experiment.applyDisturbances()
 
 		# Applies to the board
-		writePWMs(tecolab, exp.getDisturbedControlAction())
+		writePWMs(tecolab, experiment.getDisturbedControlAction())
 
 		# Logs the information
-		exp.log()
+		experiment.log()
 
-		
+writePWMs(tecolab, (0, 0, 0)) # Turn the board off after the experiment
