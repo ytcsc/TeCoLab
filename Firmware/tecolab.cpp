@@ -69,9 +69,18 @@ void HardwareControl()
   }
   else
   {
-    analogWrite(HEATER1_PIN, TecolabData.heater1PWM);
-    analogWrite(HEATER2_PIN, TecolabData.heater2PWM);
-    analogWrite(COOLER_PIN, TecolabData.coolerPWM);
+    if (TecolabData.connectionStatus == CSTATUS_WAITING)
+    {
+      analogWrite(HEATER1_PIN, 0);
+      analogWrite(HEATER2_PIN, 0);
+      analogWrite(COOLER_PIN, 0);
+    }
+    else
+    {
+      analogWrite(HEATER1_PIN, TecolabData.heater1PWM);
+      analogWrite(HEATER2_PIN, TecolabData.heater2PWM);
+      analogWrite(COOLER_PIN, TecolabData.coolerPWM);
+    }
   }
   
   if (currenttime - lastblink >= BLINK_TIME)
