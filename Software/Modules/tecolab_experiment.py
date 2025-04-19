@@ -89,7 +89,7 @@ class Experiment:
 				CSVColumns.ControlActionComputationTime.value: [self.time_control_action_computation],
 			}
 		)
-		self.log_data_frame = pd.concat([self.log_data_frame, new_row])
+		self.log_data_frame = pd.concat([self.log_data_frame.astype(new_row.dtypes), new_row])
 		if self.time_ellapsed - self.time_last_log >= 5000:
 			self.time_last_log = self.time_ellapsed
 			path = pathlib.Path(self.log_filename)

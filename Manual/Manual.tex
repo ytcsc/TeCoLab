@@ -1,5 +1,7 @@
 \documentclass[12pt]{report}
 
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{geometry}
 \usepackage{hyperref}
 \usepackage{listings}
@@ -24,6 +26,19 @@
 \hyphenation{ex-per-i-ment}
 \hyphenation{Te-Co-Lab}
 \hyphenation{Transfer-Function}
+
+\lstset{
+  basicstyle = \ttfamily\small,
+  columns = flexible,
+  keepspaces = true,
+  upquote = true,
+  showstringspaces = false,
+  breaklines = true,
+  frame = single,
+  captionpos = b,
+  numbers = none,
+  numberstyle = \tiny
+}
 
 \geometry{a4paper, total={170mm,257mm}, left=20mm, top=20mm}
 
@@ -54,7 +69,7 @@ TeCoLab, short for Temperature Control Laboratory, is an open-source tool compri
 \begin{itemize}
     \item \textbf{TeCoLab files:} Download from our GitHub repository;
     \item \textbf{Python 3:} Used to execute the TeCoLab program;
-    \item \textbf{Python 3 dependencies:} Refer to the list in Chapter~\ref{chap:dependencies};
+    \item \textbf{Python 3 dependencies:} Refer to Section~\ref{sec:dependencies};
     \item \textbf{Arduino software:} Required for loading the firmware to your Arduino (you will only need to perform this once);
     \item \textbf{Spreadsheet editor:} A spreadsheet editor, such as LibreOffice Calc, will be useful.
 \end{itemize}
@@ -65,7 +80,7 @@ TeCoLab, short for Temperature Control Laboratory, is an open-source tool compri
 To obtain TeCoLab, follow these steps:
 
 \begin{enumerate}
-    \item Visit the TeCoLab GitHub repository, click on ``Code" and select ``Download ZIP";
+    \item Visit the TeCoLab GitHub repository, click on ``Code'' and select ``Download ZIP'';
     \item Unzip the downloaded content;
     \item Voilà! TeCoLab is now on your computer.
 \end{enumerate}
@@ -86,8 +101,8 @@ No changes are needed in the firmware. This procedure is a one-time procedure.
 Three files are crucial in TeCoLab:
 
 \begin{itemize}
-    \item \textbf{Experiment File:} A \texttt{.csv} file located in \texttt{TeCoLab/Software/Experiments}. In this file, you will define your experiment, including setpoints of temperature, desired disturbances, etc.
-    \item \textbf{Control File:} A \texttt{.py} file located in \texttt{TeCoLab/Software/Controllers}. In this file, you will define the control algorithm you want to test during the experiment.
+    \item \textbf{Experiment File:} A \texttt{.csv} file located in \texttt{TeCoLab/Software/Experiments}. In this file, you will define your experiment, including setpoints of temperature, desired disturbances, etc.;
+    \item \textbf{Control File:} A \texttt{.py} file located in \texttt{TeCoLab/Software/Controllers}. In this file, you will define the control algorithm you want to test during the experiment;
     \item \textbf{Log File:} A \texttt{.csv} file. After defining the experiment and control files, you can execute an experiment. TeCoLab will record the data, such as the temperature evolution, in a log file saved at \texttt{TeCoLab/Software/Logs}.
 \end{itemize}
 
@@ -164,6 +179,32 @@ The \texttt{controlAction()} method is created to implement the control action c
 
 For more information about the control file, refer to Section~\ref{sec:ControlFile}.
 
+\section{Configuring a Python Environment}\label{sec:dependencies}
+
+Before executing your TeCoLab experiment, you need to configure a Python virtual environment. Open a terminal, navigate to the folder containing \emph{TeCoLab.py}, and run the following command:
+
+\begin{lstlisting}[language=bash]
+>> python3 -m venv TCLenv
+\end{lstlisting}
+
+This will create a folder named \texttt{TCLenv} (short for \emph{TeCoLab environment}), which allows you to manage project-specific dependencies without affecting your global Python setup. Once the environment is created, activate it with the appropriate command for your operating system:
+
+\textbf{Linux}
+\begin{lstlisting}[language=bash]
+>> source TCLenv/bin/activate
+\end{lstlisting}
+
+\textbf{Windows}
+\begin{lstlisting}[language=bash]
+>> TCLenv\Scripts\activate
+\end{lstlisting}
+
+After activation, your terminal prompt should change to indicate that the environment is active. Finally, you can install the required packages using the following command:
+
+\begin{lstlisting}[language=bash]
+>> pip3 install -r requirements.txt
+\end{lstlisting}
+
 \section{Executing the Experiment}
 
 It's time to execute your experiment. Navigate to \texttt{TeCoLab/Software}. Open the terminal and type the following command:
@@ -210,40 +251,6 @@ Maximum Power per Individual Heater (@12 V) & 1.8 W \\ \hline
 \end{tabular}
 \caption{TeCoLab specifications.}\label{tab:TeCoLabSpecs}
 \end{table}
-
-\chapter{Python Dependencies}\label{chap:dependencies}
-
-To ensure the proper functionality of TeCoLab, the following Python 3 packages are required, each serving a specific purpose:
-
-\begin{itemize}
-\item \textbf{importlib:} Loads the user's controller modules in execution time (see Chapter~\ref{chap:ControlTools});
-\item \textbf{argparse:} Parses command-line arguments for program execution;
-
-\item \textbf{control:} Provides tools regarding control systems;
-
-\item \textbf{datetime:} Manipulates dates and times in Python;
-
-\item \textbf{numpy:} Offers support for data computation;
-
-\item \textbf{pandas:} Handles experiment and log data;
-
-\item \textbf{pathlib:} Manipulates file system paths to load/save files;
-
-\item \textbf{pyserial:} Provides serial tools used to locate if a TeCoLab board is connected;
-
-\item \textbf{serial:} Executes the communication with the TeCoLab board;
-
-\item \textbf{struct:} Handles binary data for the communication protocol;
-
-\item \textbf{time:} Manages time measurements.
-
-\end{itemize}
-
-Ensure that these dependencies are installed to guarantee the correct execution of TeCoLab. You can install them using your preferred package manager or the following command:
-
-\begin{lstlisting}[language=bash]
->> pip install name_of_the_package
-\end{lstlisting}
 
 \chapter{TeCoLab Files}\label{chap:files}
 
@@ -788,7 +795,7 @@ You can adjust the base period of the TeCoLab experiment using the following com
 >> python3 tecolab.py ExperimentFile ControlleFile -t XXX
 \end{lstlisting}
 
-Replace XXX with the desired period in milliseconds. For example, setting XXX to 500 means that an experiment iteration will occur every 500 ms, instead of the default 200 ms. Adjusting this period can be beneficial if your control algorithm's computation takes more than the default 200 ms. However, be cautious, as changing this value will also affect the period of control algorithms.
+Replace \texttt{XXX} with the desired period in milliseconds. For example, setting \texttt{XXX} to 500 means that an experiment iteration will occur every 500 ms, instead of the default 200 ms. Adjusting this period can be beneficial if your control algorithm's computation takes more than the default 200 ms. However, be cautious, as changing this value will also affect the period of control algorithms.
 
 
 \chapter{FAQ - Frequently Asked Questions}\label{chap:FAQ}
@@ -819,9 +826,7 @@ Check if you executed an experiment without connecting the 12 V DC power supply.
 
 \section{Why the time in log files are not equally spaced?}
 
-Ideally, the time values in the log file should be evenly spaced, with a default spacing of 200 ms (see Section~\ref{sec:TeCoLabPeriod}). However, some variation (around 10 ms) is not uncommon.
-
-If the variation is excessive, potential causes include:
+Ideally, the time values in the log file should be evenly spaced, with a default spacing of 200 ms (see Section~\ref{sec:TeCoLabPeriod}). However, some variation (around 10 ms) is not uncommon. If the variation is excessive, potential causes include:
 \begin{itemize}
 \item Your computer is overloaded: Try closing other applications or restarting your computer before running a TeCoLab experiment.
 \item Your control algorithm takes too long: Check the control algorithm computation time in the log file (see Section~\ref{sec:LogFile}). If the time is excessive, consider optimizing your algorithm or adjusting the experiment period (see Chapter~\ref{chap:AdvancedConfigs}). Note: changing the experiment period may also impact your algorithm's execution period.
@@ -835,7 +840,7 @@ An experiment must run for more than 5 seconds to save a log file.
 
 A slight temperature difference (around 1 °C) between the initial heater temperatures and the ambient temperature is common due to sensor variations. If the difference is greater, ensure you are not running consecutive experiments. After one experiment, wait for sufficient time for the heater elements to cool down before starting another one.
 
-\section{Why the temperature experienced a non specified disturbance?}
+\section{Why the temperature experienced a non-specified disturbance?}
 
 Note that TeCoLab is a physical system, which means that external disturbances, not specified in the experiment file, might affect its sensors. For example, if a gust of wind blows on TeCoLab's temperature sensors, it can introduce unexpected disturbances. To prevent such scenarios, it is recommended to run TeCoLab experiments in an environment where the system will not be subject to external disturbances.
 
