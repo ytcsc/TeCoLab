@@ -63,7 +63,7 @@ class Experiment:
 				CSVColumns.SetPoint1Absolute.value: self.table_current_row[CSVColumns.SetPoint1Absolute.value],
 				CSVColumns.SetPoint2Absolute.value: self.table_current_row[CSVColumns.SetPoint2Absolute.value],
 				CSVColumns.SetPoint1Relative.value: self.table_current_row[CSVColumns.SetPoint1Relative.value],
-				CSVColumns.SetPoint1Relative.value: self.table_current_row[CSVColumns.SetPoint1Relative.value],
+				CSVColumns.SetPoint2Relative.value: self.table_current_row[CSVColumns.SetPoint2Relative.value],
 				CSVColumns.MultiplicativeNoiseH1.value: self.table_current_row[CSVColumns.MultiplicativeNoiseH1.value],
 				CSVColumns.MultiplicativeNoiseH2.value: self.table_current_row[CSVColumns.MultiplicativeNoiseH2.value],
 				CSVColumns.MultiplicativeNoiseFan.value: self.table_current_row[CSVColumns.MultiplicativeNoiseFan.value],
