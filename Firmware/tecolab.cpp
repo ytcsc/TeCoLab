@@ -50,7 +50,7 @@ void GetTemperatures()
       TecolabData.temperatureStatus = TSTATUS_OVERHEATED;
     if (((heater1Temp >= HIGHTEMPERATURE) || (heater2Temp >= HIGHTEMPERATURE)) && (TecolabData.temperatureStatus != TSTATUS_OVERHEATED))
       TecolabData.temperatureStatus = TSTATUS_HIGHTEMP;
-    if (((heater1Temp < HIGHTEMPERATURE) || (heater2Temp < HIGHTEMPERATURE)) && (TecolabData.temperatureStatus != TSTATUS_OVERHEATED))
+    if (((heater1Temp < HIGHTEMPERATURE) && (heater2Temp < HIGHTEMPERATURE)) && (TecolabData.temperatureStatus != TSTATUS_OVERHEATED))
       TecolabData.temperatureStatus = TSTATUS_LOWTEMP;
   }
 }
