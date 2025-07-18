@@ -63,7 +63,7 @@ class Experiment:
 				CSVColumns.SetPoint1Absolute.value: self.table_current_row[CSVColumns.SetPoint1Absolute.value],
 				CSVColumns.SetPoint2Absolute.value: self.table_current_row[CSVColumns.SetPoint2Absolute.value],
 				CSVColumns.SetPoint1Relative.value: self.table_current_row[CSVColumns.SetPoint1Relative.value],
-				CSVColumns.SetPoint1Relative.value: self.table_current_row[CSVColumns.SetPoint1Relative.value],
+				CSVColumns.SetPoint2Relative.value: self.table_current_row[CSVColumns.SetPoint2Relative.value],
 				CSVColumns.MultiplicativeNoiseH1.value: self.table_current_row[CSVColumns.MultiplicativeNoiseH1.value],
 				CSVColumns.MultiplicativeNoiseH2.value: self.table_current_row[CSVColumns.MultiplicativeNoiseH2.value],
 				CSVColumns.MultiplicativeNoiseFan.value: self.table_current_row[CSVColumns.MultiplicativeNoiseFan.value],
@@ -89,7 +89,7 @@ class Experiment:
 				CSVColumns.ControlActionComputationTime.value: [self.time_control_action_computation],
 			}
 		)
-		self.log_data_frame = pd.concat([self.log_data_frame, new_row])
+		self.log_data_frame = pd.concat([self.log_data_frame.astype(new_row.dtypes), new_row])
 		if self.time_ellapsed - self.time_last_log >= 5000:
 			self.time_last_log = self.time_ellapsed
 			path = pathlib.Path(self.log_filename)

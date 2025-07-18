@@ -40,6 +40,7 @@ def searchTeCoLabPort():
 	## Search for TeCoLab device
 	print(TecolabMessages.Message6.value)
 	for port, desc, hwid in sorted(ports):
+		ser = None
 		try:
 			ser = serial.Serial(port, 115200, timeout = 0.10, write_timeout = 1.00)
 			time.sleep(4)
@@ -51,7 +52,7 @@ def searchTeCoLabPort():
 		if ans == b"AA":
 			print(TecolabMessages.Message8.value, '{}'.format(ser.name))
 			return ser
-		else:
+		if ser:
 			ser.close()
 	return False
 
